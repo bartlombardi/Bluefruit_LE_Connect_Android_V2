@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -54,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static com.adafruit.bluefruit.le.controller.FileHelper.searchInFiles;
 
 // TODO: register
 public abstract class UartBaseFragment extends ConnectedPeripheralFragment implements UartPacketManagerBase.Listener, MqttManager.MqttManagerListener {
@@ -507,6 +511,41 @@ public abstract class UartBaseFragment extends ConnectedPeripheralFragment imple
         }
     }
 
+    private void textToVibrate(String numberOfContainer){
+        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+        long[] pattern1 = {0, 2000, 1000};
+        long[] pattern2 = {0, 2000, 1000, 2000, 1000};
+        long[] pattern3 = {0, 2000, 1000, 2000, 1000, 2000, 1000};
+        long[] pattern4 = {0, 2000, 1000, 2000, 1000, 2000, 1000, 2000, 1000};
+        long[] pattern5 = {0, 2000, 1000, 2000, 1000, 2000, 1000, 2000, 1000, 2000, 1000};
+
+        switch (numberOfContainer)
+        {
+            case "1":
+                v.vibrate(pattern1, -1);
+                break;
+
+            case "2":
+                v.vibrate(pattern2, -1);
+                break;
+
+            case "3":
+                v.vibrate(pattern3, -1);
+                break;
+
+            case "4":
+                v.vibrate(pattern4, -1);
+                break;
+
+            case "5":
+                v.vibrate(pattern5, -1);
+                break;
+
+            default:
+        }
+    }
+
     private void addTextToSpanBuffer(SpannableStringBuilder spanBuffer, String text, int color, boolean isBold) {
         final int from = spanBuffer.length();
         spanBuffer.append(text);
@@ -585,7 +624,11 @@ public abstract class UartBaseFragment extends ConnectedPeripheralFragment imple
             final boolean isBold = isFontBoldForPacket(packet);
             final byte[] bytes = packet.getData();
             final String formattedData = mShowDataInHexFormat ? BleUtils.bytesToHex2(bytes) : BleUtils.bytesToText(bytes, true);
+            final String numberOfContainer = searchInFiles(formattedData, getContext());
+
+            textToVibrate(numberOfContainer);
             addTextToSpanBuffer(mTextSpanBuffer, formattedData, color, isBold);
+
         }
     }
 
