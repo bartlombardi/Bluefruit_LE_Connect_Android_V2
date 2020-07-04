@@ -627,7 +627,7 @@ public abstract class UartBaseFragment extends ConnectedPeripheralFragment imple
             final String numberOfContainer = searchInFiles(formattedData, getContext());
 
             textToVibrate(numberOfContainer);
-            addTextToSpanBuffer(mTextSpanBuffer, formattedData, color, isBold);
+            addTextToSpanBuffer(mTextSpanBuffer, formattedData + "\n", color, isBold);
 
         }
     }
